@@ -322,14 +322,16 @@ const Home = ({id, go, fetchedUser}) => {
                             />
                         </FormItem>
 
-                        <Button
-                            size="l"
-                            stretched
-                            onClick={() => handleSend(name, date, startTime, description, pointValue, location, image)}
-                            style={{background: '#4CD964'}}
-                        >
-                            Создать мероприятие
-                        </Button>
+                        <Div>
+                            <Button
+                                size="l"
+                                stretched
+                                onClick={() => handleSend(name, date, startTime, description, pointValue, location, image)}
+                                style={{background: '#4CD964'}}
+                            >
+                                Создать мероприятие
+                            </Button>
+                        </Div>
 
 
                         {snackbar}

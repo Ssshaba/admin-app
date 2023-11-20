@@ -63,9 +63,12 @@ const Home = ({id, go, fetchedUser}) => {
         const isDateValid = date.trim() !== '';
         const isStartTimeValid = startTime.trim() !== '';
         const isDescriptionValid = description.trim() !== '';
-        const isPointValueValid = !isNaN(pointValue);
+        //const isPointValueValid = !isNaN(pointValue);
         const isLocationValid = location.trim() !== '';
-        const isImageValid = image.trim() !== '';
+        //const isImageValid = image.trim() !== '';
+
+        const isImageValid = isValidImageUrl(image);
+        const isPointValueValid = isValidPositiveInteger(pointValue);
 
         setFormValid(
             isNameValid &&
@@ -83,9 +86,11 @@ const Home = ({id, go, fetchedUser}) => {
             setDateError(isDateValid ? '' : 'Заполните это поле');
             setStartTimeError(isStartTimeValid ? '' : 'Заполните это поле');
             setDescriptionError(isDescriptionValid ? '' : 'Заполните это поле');
-            setPointValueError(isPointValueValid ? '' : 'Введите числовое значение');
+            //setPointValueError(isPointValueValid ? '' : 'Введите положительное числовое значение');
+            setPointValueError(isPointValueValid ? '' : 'Введите положительное числовое значение');
             setLocationError(isLocationValid ? '' : 'Заполните это поле');
-            setImageError(isImageValid ? '' : 'Заполните это поле');
+            //setImageError(isImageValid ? '' : 'Заполните это поле');
+            setImageError(isImageValid ? '' : 'Введите корректный URL изображения');
         }
     }, [name, date, startTime, description, pointValue, location, image, buttonClicked]);
 
@@ -103,6 +108,17 @@ const Home = ({id, go, fetchedUser}) => {
         fetchData();
     }, []);
 
+    const isValidImageUrl = (url) => {
+        //const urlPattern = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
+        const urlPattern = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/;
+        return urlPattern.test(url);
+      };
+      
+      const isValidPositiveInteger = (value) => {
+        const intValue = parseInt(value, 10);
+        return !isNaN(intValue) && intValue > 0;
+      };
+
 
     const handleSend = async (name, date, startTime, description, pointValue, location, image, adminVkId) => {
         if (!formValid) {
@@ -116,7 +132,7 @@ const Home = ({id, go, fetchedUser}) => {
                     }}
                     before={<Icon28CancelCircleFillRed/>}
                 >
-                    Пожалуйста, заполните все поля!
+                    Пожалуйста, заполните все поля корректно!
                 </Snackbar>
             );
             return;
@@ -228,12 +244,12 @@ const Home = ({id, go, fetchedUser}) => {
                             />
                         </FormItem>
                         <FormItem top="Ссылка на изображение" htmlFor="image"
-                                  bottom={<span style={{color: 'red'}}>{imageError}</span>}>
+                                  bottom={<span style={{ color: 'red' }}>{imageError}</span>}>
                             <Input
                                 type="text"
                                 placeholder="Введите URL изображения"
                                 value={image}
-                                onChange={e => setImage(e.target.value)}
+                                onChange={(e) => setImage(e.target.value)}
                             />
                         </FormItem>
 

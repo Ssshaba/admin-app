@@ -21,7 +21,7 @@ import sadPersik from '../img/newSadPersik.png';
 import bridge from "@vkontakte/vk-bridge";
 import vkQr from '@vkontakte/vk-qr';
 import {Icon28CalendarOutline, Icon28FavoriteOutline, Icon20DonateOutline, Icon24ShareOutline} from "@vkontakte/icons";
-import QRCode from "qrcode.react";
+
 
 
 const MyEvent = ({id, go}) => {

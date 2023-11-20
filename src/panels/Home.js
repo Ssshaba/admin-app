@@ -53,11 +53,6 @@ const Home = ({id, go, fetchedUser}) => {
     const [pointValueError, setPointValueError] = useState('');
     const [locationError, setLocationError] = useState('');
     const [imageError, setImageError] = useState('');
-
-    const [pointsToSend, setPointsToSend] = useState(0); // Стейт для количества баллов для отправки
-    const [qrData, setQRData] = useState(''); // Стейт для данных QR-кода
-    const [modal, setModal] = useState(null); // Состояние модального окна
-    const [qrCodeImageUrl, setQrCodeImageUrl] = useState('');
     const [user, setUser] = useState(null);
 
 
@@ -109,9 +104,7 @@ const Home = ({id, go, fetchedUser}) => {
     }, []);
 
 
-
-
-    const handleSend = async (name, date, startTime, description, pointValue, location, image) => {
+    const handleSend = async (name, date, startTime, description, pointValue, location, image, adminVkId) => {
         if (!formValid) {
             // Логика для обработки невалидных данных формы
             console.error('Невалидные данные формы');
@@ -136,7 +129,7 @@ const Home = ({id, go, fetchedUser}) => {
                 date,
                 startTime,
                 description,
-                pointValue,
+                pointValue: Number(pointValue), // преобразование в число
                 location,
                 image
             };
@@ -155,9 +148,6 @@ const Home = ({id, go, fetchedUser}) => {
                 // Обработка успешного ответа от сервера
                 console.log('Данные успешно отправлены на сервер. Ответ сервера:', await response.json());
 
-                // setPointsToSend(pointValue); // Установка количества баллов
-                // setQRData(`Название: ${name}\nДата: ${date}\nВремя: ${startTime}\nБаллы: ${pointValue}`);
-
                 setSnackbar(
                     <Snackbar
                         onClose={() => {
@@ -170,27 +160,6 @@ const Home = ({id, go, fetchedUser}) => {
                     </Snackbar>
                 );
 
-                // // Открытие модального окна с информацией о количестве баллов
-                // setModal(
-                //     <ModalRoot activeModal="pointsModal">
-                //         <ModalPage
-                //             id="pointsModal"
-                //             onClose={() => setModal(null)}
-                //             header={
-                //                 <ModalPageHeader
-                //                     left={<PanelHeaderButton onClick={() => setModal(null)}>Закрыть</PanelHeaderButton>}
-                //                 >
-                //                     Количество баллов
-                //                 </ModalPageHeader>
-                //             }
-                //         >
-                //             <div style={{padding: '20px', textAlign: 'center'}}>
-                //                 <h2>Поздравляем!</h2>
-                //                 <p>Вы заработали {pointsToSend} баллов!</p>
-                //             </div>
-                //         </ModalPage>
-                //     </ModalRoot>
-                // );
             } else {
                 // Обработка ошибки
                 console.error('Ошибка при отправке данных на сервер');
@@ -200,60 +169,6 @@ const Home = ({id, go, fetchedUser}) => {
             console.error('Статус ошибки:', error.status);
             console.error('Текст ошибки:', error.statusText);
         }
-    };
-
-
-
-    const generateQRCode = () => {
-        const qrData = JSON.stringify({
-            name,
-            date,
-            startTime,
-            description,
-            pointValue,
-            location,
-            image
-        });
-        console.log('Данные для QR-кода:', qrData);
-        setQRData(qrData);
-
-        // Генерация QR-кода и получение URL изображения
-        const qrCodeImageUrl = `data:image/png;base64,${btoa(qrData)}`;
-        setQrCodeImageUrl(qrCodeImageUrl);
-
-
-        setModal(
-            <ModalRoot
-                onClose={() => setModal(null)}
-                activeModal="qrModal"
-            >
-                <ModalPage
-                    id="qrModal"
-                    onClose={() => setModal(null)}
-                    header={
-                        <ModalPageHeader
-                            left={<PanelHeaderClose onClick={() => setModal(null)}/>}
-                        >
-                            Сгенерированный QR-код
-                        </ModalPageHeader>
-                    }
-                >
-                    <Div>
-                        <QRCode value={qrData}/>
-                    </Div>
-
-                    <Div>
-                        <img src={qrCodeImageUrl} alt="QR Code"/>
-                    </Div>
-
-
-
-                    <Button size="l" onClick={() => handleSend(name, date, startTime, description, pointValue, location, image)}>
-                        Создать мероприятие
-                    </Button>
-                </ModalPage>
-            </ModalRoot>
-        );
     };
 
     return (
@@ -327,17 +242,17 @@ const Home = ({id, go, fetchedUser}) => {
                                 size="l"
                                 stretched
                                 onClick={() => handleSend(name, date, startTime, description, pointValue, location, image)}
-                                style={{background: '#4CD964'}}
+                                style={{backgroundColor: '#4CD964'}} // Обратите внимание на свойство backgroundColor
                             >
                                 Создать мероприятие
                             </Button>
-                        </Div>
 
+                        </Div>
 
                         {snackbar}
 
                     </FormLayout>
-                    <SplitLayout modal={modal}></SplitLayout>
+
                     <Tabbar style={{position: 'fixed', bottom: 0, width: '100%'}}>
                         <TabbarItem
                             onClick={go}

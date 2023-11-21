@@ -140,9 +140,8 @@ const MyEvent = ({id, go}) => {
                                     style={{marginTop: '30px'}}
                                 />
                                 <Title level="2" weight="demibold">Мероприятия не найдены</Title>
-                                <Text weight="regular" style={{marginTop: '15px'}}>У вас пока нет выбранных
+                                <Text weight="regular" style={{marginTop: '15px'}}>У вас пока нет созданных
                                     мероприятий.</Text>
-                                <Text weight="regular">Переходите в Мероприятия и участвуйте!</Text>
                             </Div>
                         ) : (
                             events.map(event => (
@@ -155,12 +154,7 @@ const MyEvent = ({id, go}) => {
 
                                         caption={
                                             <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                                <div>
-                                                    <Text>{`Дата:  ${event.date}`}</Text>
-                                                </div>
-                                                <Div style={{paddingTop: '5px'}}>
-                                                    <Icon24ShareOutline/>
-                                                </Div>
+                                                <Text>{`Дата:  ${event.date}`}</Text>
                                             </div>
                                         }
                                     />

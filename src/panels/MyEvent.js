@@ -33,8 +33,13 @@ const MyEvent = ({id, go}) => {
 
 
     const openModals = (event) => {
+
         // Генерируем QR-код с использованием данных о мероприятии
-        const qrCodeSvg = vkQr.createQR(`${event.pointValue}`, {
+        const qrData = {
+            id: event.id,
+            pointValue: event.pointValue,
+        };
+        const qrCodeSvg = vkQr.createQR(JSON.stringify(qrData), {
             qrSize: 256,
             isShowLogo: true,
             // Добавьте другие параметры в соответствии с вашими требованиями
@@ -73,7 +78,7 @@ const MyEvent = ({id, go}) => {
                 >
                     <Group style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center'}}>
                         <Div style={{marginBottom: '10px', paddingBottom: '30px'}} dangerouslySetInnerHTML={{__html: qrCodeSvg}}/>
-                            <Title level="1" weight="bold" style={{marginBottom: '10px', fontSize: '16px', whiteSpace: 'pre-wrap', wordWrap: 'break-word'}}>{`Мероприятие: ${event.name}`}</Title>
+                        <Title level="1" weight="bold" style={{marginBottom: '10px', fontSize: '16px', whiteSpace: 'pre-wrap', wordWrap: 'break-word'}}>{`Мероприятие: ${event.name}`}</Title>
                     </Group>
                 </ModalPage>
             </ModalRoot>

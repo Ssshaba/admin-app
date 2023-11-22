@@ -14,7 +14,16 @@ import {
     TabbarItem,
     View,
     Text,
-    Title, PanelHeaderButton, ModalPageHeader, ModalPage, ModalRoot, PanelHeaderClose, Button, SplitLayout
+    Title,
+    PanelHeaderButton,
+    ModalPageHeader,
+    ModalPage,
+    ModalRoot,
+    PanelHeaderClose,
+    Button,
+    SplitLayout,
+    ModalCard,
+    ButtonGroup
 } from '@vkontakte/vkui';
 
 import sadPersik from '../img/newSadPersik.png';
@@ -22,7 +31,7 @@ import bridge from "@vkontakte/vk-bridge";
 import vkQr from '@vkontakte/vk-qr';
 import {Icon28CalendarOutline, Icon28FavoriteOutline, Icon20DonateOutline, Icon24ShareOutline} from "@vkontakte/icons";
 
-
+import { Icon16Cancel } from '@vkontakte/icons';
 
 const MyEvent = ({id, go}) => {
     const [user, setUser] = useState({});
@@ -130,6 +139,90 @@ const MyEvent = ({id, go}) => {
     }, []);
 
 
+    const openModalsDeleteEvent = (event) => {
+        console.log(event.name);
+        setModal(
+            <ModalRoot
+                onClose={() => setModal(null)}
+                activeModal="duplicateScanModal"
+            >
+                <ModalCard
+                    id="duplicateScanModal"
+                    onClose={() => setModal(null)}
+                    header={
+                        <ModalPageHeader
+                            left={<PanelHeaderClose onClick={() => setModal(null)} />}
+                        >
+                            Удаление мероприятия
+                        </ModalPageHeader>
+                    }
+                >
+                    <Div style={{ textAlign: 'center' }}>
+                        <Div>
+                            <Text
+                                level="3"
+                                weight="semibold"
+                                style={{ marginTop: '20px', marginBottom: '10px' }}
+                            >
+                                Вы действительно хотите удалить мероприятие:
+                                <span style={{ fontWeight: 'bold' }}>{` "${event.name}"`}</span>?
+                            </Text>
+                        </Div>
+
+                        <Div style={{ marginTop: '10px' }}>
+                            <ButtonGroup mode="horizontal" gap="m" stretched>
+                                <Button size="l" stretched onClick={() => setModal(null)}>
+                                    Отмена
+                                </Button>
+
+                                <Button size="l" appearance="negative" stretched onClick={() => handleDeleteEvent(event)}>
+                                    Удалить
+                                </Button>
+
+                            </ButtonGroup>
+                        </Div>
+                    </Div>
+                </ModalCard>
+            </ModalRoot>
+        );
+    };
+
+
+
+    const handleDeleteEvent = async (event) => {
+        try {
+            console.log(`Пытаемся удалить мероприятие с id ${event.id}, название: ${event.name}`);
+
+            const response = await fetch(`https://persikivk.ru/api/event/delete/${event.id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                console.log('Мероприятие успешно удалено');
+                // Дополнительные действия при успешном удалении мероприятия, если необходимо
+                // После удаления обновляем список мероприятий
+                fetchEvents();
+            } else {
+                console.error('Ошибка при удалении мероприятия:', response.status, response.statusText);
+                // Дополнительные действия при ошибке удаления мероприятия, если необходимо
+            }
+        } catch (error) {
+            console.error('Ошибка при выполнении DELETE-запроса:', error);
+            // Дополнительные действия при ошибке, если необходимо
+        } finally {
+            // Закрыть модальное окно после завершения запроса, независимо от его результата
+            setModal(null);
+        }
+    };
+
+
+
+
+
+
     return (
         <Epic activeStory={id}>
             <View id={id} activePanel={id}>
@@ -159,7 +252,13 @@ const MyEvent = ({id, go}) => {
 
                                         caption={
                                             <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                                <Text>{`Дата:  ${event.date}`}</Text>
+                                                <div>
+                                                    <Text>{`Дата:  ${event.date}`}</Text>
+                                                </div>
+                                                <Div style={{ paddingTop: '5px' }} onClick={(e) => { e.stopPropagation(); openModalsDeleteEvent(event); }}>
+                                                    <Icon16Cancel style={{marginTop: '8px'}}/>
+                                                </Div>
+                                                {/*<Text>{`Дата:  ${event.date}`}</Text>*/}
                                             </div>
                                         }
                                     />

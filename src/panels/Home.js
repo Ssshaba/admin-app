@@ -22,7 +22,7 @@ import {
     PanelHeaderButton,
     ModalRoot,
     ModalPage,
-    ModalPageHeader, Epic, Tabbar, TabbarItem, PanelHeaderClose
+    ModalPageHeader, Epic, Tabbar, TabbarItem, PanelHeaderClose, Select
 } from '@vkontakte/vkui';
 import {
     Icon28CalendarOutline,
@@ -38,6 +38,8 @@ const Home = ({id, go, fetchedUser}) => {
     const [buttonClicked, setButtonClicked] = useState(false);
     const [submitStatus, setSubmitStatus] = useState(null);
 
+
+    const [university, setUniversity] = useState(null);
     const [name, setName] = useState('');
     const [date, setDate] = useState('');
     const [startTime, setStartTime] = useState('');
@@ -147,7 +149,8 @@ const Home = ({id, go, fetchedUser}) => {
                 description,
                 pointValue: Number(pointValue), // преобразование в число
                 location,
-                image
+                image,
+                university,
             };
 
             console.log('Данные для отправки на сервер:', eventData);
@@ -252,12 +255,23 @@ const Home = ({id, go, fetchedUser}) => {
                                 onChange={(e) => setImage(e.target.value)}
                             />
                         </FormItem>
+                        <FormItem top="Университет" htmlFor=""
+                                  bottom={<span style={{ color: 'red' }}>{imageError}</span>}>
+                            <Select
+                                placeholder="Выберите для какого университета мероприятия"
+                                options={[
+                                    {value: 'donstu', label: 'ДГТУ'},
+                                    {value: 'general', label: 'Общие'},
 
+                                ]}
+                                value={university}
+                                onChange={(e) => setUniversity(e.target.value)}/>
+                        </FormItem>
                         <Div>
                             <Button
                                 size="l"
                                 stretched
-                                onClick={() => handleSend(name, date, startTime, description, pointValue, location, image)}
+                                onClick={() => handleSend(name, date, startTime, description, pointValue, location, image, university)}
                                 style={{backgroundColor: '#4CD964'}} // Обратите внимание на свойство backgroundColor
                             >
                                 Создать мероприятие
